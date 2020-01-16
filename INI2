@@ -5,7 +5,7 @@
 class StandardInput:
 
     def stdin_string(self):
-        self.s=str(input().rstrip())
+        self.s=input().rstrip()
         return self.s
 
     def stdin_integer(self):
@@ -17,7 +17,7 @@ class StandardInput:
         return self.arr
 
     def stdin_integer_array(self):
-        self.arr=list(map(int,input().rstrip().split()))
+        self.arr=map(int,input().rstrip().split())
         return self.arr
 
 def test(arr):
