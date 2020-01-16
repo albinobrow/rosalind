@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+import sys
+if sys.version_info[0]<3: input=raw_input
 
 class StandardInput:
 
@@ -17,7 +19,7 @@ class StandardInput:
         return self.arr
 
     def stdin_integer_array(self):
-        self.arr=map(int,input().rstrip().split())
+        self.arr=list(map(int,input().rstrip().split()))
         return self.arr
 
 def test(arr):
