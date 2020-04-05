@@ -4,7 +4,7 @@
 import re, sys
 if sys.version_info[0]<3: input=raw_input
 
-def BA1F(text):
+def test(text):
     m,n=0,len(text)
     arr,res=[0]*(n+1),[]
     for i in range(n):
@@ -23,8 +23,8 @@ def BA1F(text):
 
 if __name__ == '__main__':
     fl_in=sys.argv[1]
-    fl_out=re.sub('.txt', '_result.txt', fl_in, 1)
+    fl_out=re.sub('.txt$', '_result.txt', fl_in, 1)
     with open( fl_in, 'r' ) as flr:
         text=flr.readline().rstrip()
     with open( fl_out, 'w' ) as flw:
-        flw.write(BA1F(text)+'\n')
+        flw.write(test(text)+'\n')
