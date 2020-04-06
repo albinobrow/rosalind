@@ -55,12 +55,13 @@ def MotifEnumeration(l, k, d):
     for i in data:
         if i[1]!=0:
             b.append(i[0])
-    return b
+    return ' '.join(b)
 
 if __name__ == '__main__':
     fl_in=sys.argv[1]
     fl_out=re.sub('.txt$', '_result.txt', fl_in, 1)
     with open( fl_in, 'r' ) as flr:
-        text=flr.readline().rstrip()
+        k,d=map(int, str(flr.readline().rstrip()).split())
+        l=list(map(lambda x: x.rstrip(), flr.readlines()))
     with open( fl_out, 'w' ) as flw:
-        flw.write(test(text)+'\n')
+        flw.write(MotifEnumeration(l, k, d)+'\n')
