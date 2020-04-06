@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import re, sys
+import itertools, re, sys
 if sys.version_info[0]<3: input=raw_input
 
 def HammingDistance(s,t):
@@ -31,12 +31,9 @@ def PatternToNumber(s):
     return c
 
 def MotifEnumeration(l, k, d):
-    import itertools
     n=len(l)
     data={}
-    base=['A', 'C', 'G', 'T']
-    for x in sorted(itertools.product(base, repeat=k)):
-        x=''.join(x)
+    for x in list(map(lambda x: ''.join(x), sorted(itertools.product(['A', 'C', 'G', 'T'], repeat=k)))):
         data[x]=0
         c=0
         a=[] 
