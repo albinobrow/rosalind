@@ -56,7 +56,7 @@ def MaxHeapChunk(arr, i):
 def BuildMaxHeap(n, arr):
     arr.insert(0, 'Inf')
     n=len(arr)
-    for i in range(n//2, 0, -1):
+    for i in range(n//2-1, 0, -1):
         MaxHeapChunk(arr, i)
     return arr[1:]
 
