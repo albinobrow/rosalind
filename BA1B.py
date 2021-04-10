@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import sys
+
+import datetime, re, sys
 if sys.version_info[0]<3: input=raw_input
 
 class RowLineInput:
@@ -28,12 +29,18 @@ class RowLineInput:
 class OpenArgumentFile:
 
       def read_single_file(self):
-          with open(sys.argv[1], 'r', encoding='utf-8') as f:
+          with open(sys.argv[1], 'r', encoding='utf-8') as fhr:
               arr=[]
-              for i in f:
-                  obj=RowLineInput(i)
-                  arr.append(obj.rwlin_string())
+              arr.append(RowLineInput(fhr.readline()).rwlin_string())
+              arr.append(RowLineInput(fhr.readline()).rwlin_integer())
           return arr
+
+class OpenAchivementFile:
+      
+      def name_output_file(self):
+          dt_now = datetime.datetime.now()
+          return re.sub(r"\.txt$", ".result."+dt_now.strftime('%Y-%m-%d--%H-%M-%S')+".txt", sys.argv[1])
+
 
 def dict(arr):
     dict={}
@@ -53,18 +60,21 @@ def PrettyPrintArray(arr):
 
 def test(arr):
     ###
-    text,n=arr
-    n=int(n)
+
+    text,k=arr
     arr_processed=[]
-    for i in range(len(text)-n+1):
-        arr_processed.append(text[i:i+n])
+    for i in range(len(text)-k+1):
+        arr_processed.append(text[i:i+k])
     d=dict(arr_processed)
-    arr=MostFrequentKeys(d)
-    ans=PrettyPrintArray(arr)
-    return ans
+    brr=MostFrequentKeys(d)
+    return PrettyPrintArray(brr)
+
     ###
 
 if __name__ == '__main__':
-    saf=OpenArgumentFile()
-    arr=saf.read_single_file()
+
+    arr=OpenArgumentFile().read_single_file()
+    output_file=OpenAchivementFile().name_output_file()
+    with open( output_file, 'w', encoding='utf-8') as fhw:
+        fhw.write(str(test(arr))+'\n')
     print(test(arr))
