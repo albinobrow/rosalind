@@ -1,30 +1,89 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import re, sys
+
+import datetime, re, string, sys
 if sys.version_info[0]<3: input=raw_input
 
-def test(text):
-    m,n=0,len(text)
-    arr,res=[0]*(n+1),[]
-    for i in range(n):
-        if text[i]=='G':
-            arr[i+1]=arr[i]+1
-        elif text[i]=='C':
-            arr[i+1]=arr[i]-1
+class RowLineInput:
+
+    def __init__(self, i):
+        self.i=i
+
+    def rwlin_string(self):
+        self.s=self.i.rstrip()
+        return self.s
+
+    def rwlin_integer(self):
+        self.n=int(self.i.rstrip())
+        return self.n
+
+    def rwlin_array(self):
+        self.arr=list(map( lambda x: x.rstrip(), self.i))
+        return self.arr
+
+    def rwlin_integer_array(self):
+        self.arr=list(map(int,self.i.rstrip().split()))
+        return self.arr
+
+class OpenArgumentFile:
+
+      def read_single_file(self):
+          with open(sys.argv[1], 'r', encoding='utf-8') as fhr:
+              arr=RowLineInput(fhr.readlines()).rwlin_array()
+          return arr
+
+class OpenAchivementFile:
+      
+      def name_output_file(self):
+          dt_now = datetime.datetime.now()
+          return re.sub(r"\.txt$", ".result."+dt_now.strftime('%Y-%m-%d--%H-%M-%S')+".txt", sys.argv[1])
+
+
+def MinimumSkewProblem(seq):
+    arr = [0]
+    minval = 0
+    minidx = [0]
+    for i in range( len(seq) ):        
+        if seq[i] == 'C':
+            tmpval = arr[i]-1
+            arr.append( tmpval )
+            if tmpval < minval:
+                minval = tmpval
+                minidx =  [i+1]
+            elif tmpval == minval:
+                minidx.append(i+1)
+            else:
+                pass
+        elif seq[i] == 'G':
+            tmpval = arr[i]+1
+            arr.append( tmpval )
         else:
-            arr[i+1]=arr[i]
-        if arr[i+1] < m:
-            m=arr[i+1]
-            res=[str(i+1)]
-        elif arr[i+1] == m:
-            res.append(str(i+1))
-    return ' '.join(res)
+            tmpval = arr[i]
+            arr.append( tmpval )
+            if tmpval == minval:
+                minidx.append(i+1)
+    return minidx
+
+
+def PrettyPrintArray(arr):
+    arr=list(map(str, arr))
+    return ' '.join(arr)
+
+
+def test(arr):
+    ###
+
+    seq=arr[0]
+    arr=MinimumSkewProblem(seq)
+    return arr
+
+    ###
+
 
 if __name__ == '__main__':
-    fl_in=sys.argv[1]
-    fl_out=re.sub('.txt$', '_result.txt', fl_in, 1)
-    with open( fl_in, 'r' ) as flr:
-        text=flr.readline().rstrip()
-    with open( fl_out, 'w' ) as flw:
-        flw.write(test(text)+'\n')
+
+    arr=OpenArgumentFile().read_single_file()
+    output_file=OpenAchivementFile().name_output_file()
+    with open( output_file, 'w', encoding='utf-8') as fhw:
+        fhw.write(str(PrettyPrintArray(test(arr)))+'\n')
