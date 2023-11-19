@@ -44,6 +44,16 @@ def PrettyPrintArray(arr):
     arr=list(map(str, arr))
     return ' '.join(arr)
 
+
+def IntConverter( element ):
+    is_int = element.isdecimal()
+    if is_int == True:
+        element = int( element )
+    else:
+        pass
+    return element
+
+
 def PatternCount(s,t):
     n=len(s)
     m=len(t)
@@ -53,6 +63,7 @@ def PatternCount(s,t):
             count+=1
     return count
 
+
 def GenerateFrequencyArray(s, k):
     base=['A', 'C', 'G', 'T']
     l=[]
@@ -60,6 +71,7 @@ def GenerateFrequencyArray(s, k):
         i=''.join(i)
         l.append(PatternCount(s,i))
     return l
+
 
 def ImplementPatternToNumber(s):
     d={'A':0, 'C':1, 'G':2, 'T':3}
@@ -91,11 +103,11 @@ def ImplementNumberToPattern( n, k ):
 def test(arr):
     ###
     
-    n=int( arr[0] )
-    k=int( arr[1] )
-    
+    n=IntConverter( arr[0] )
+    k=IntConverter( arr[1] )
     
     return ImplementNumberToPattern( n, k )
+
     ###
 
 
