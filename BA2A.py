@@ -1,8 +1,45 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import itertools, re, sys
+
+import datetime, re, string, sys, itertools
 if sys.version_info[0]<3: input=raw_input
+
+class RowLineInput:
+
+    def __init__(self, i):
+        self.i=i
+
+    def rwlin_string(self):
+        self.s=self.i.rstrip()
+        return self.s
+
+    def rwlin_integer(self):
+        self.n=int(self.i.rstrip())
+        return self.n
+
+    def rwlin_array(self):
+        self.arr=list(map( lambda x: x.rstrip(), self.i))
+        return self.arr
+
+class OpenArgumentFile:
+
+      def read_single_file(self):
+          with open(sys.argv[1], 'r', encoding='utf-8') as fhr:
+              arr=RowLineInput(fhr.readlines()).rwlin_array()
+          return arr
+
+class OpenAchivementFile:
+      
+      def name_output_file(self):
+          dt_now = datetime.datetime.now()
+          return re.sub(r"\.txt$", ".result."+dt_now.strftime('%Y-%m-%d--%H-%M-%S')+".txt", sys.argv[1])
+
+
+def PrettyPrintArray(arr):
+    arr=list(map(str, arr))
+    return ' '.join(arr)
+
 
 def HammingDistance(s,t):
     n=len(s)
@@ -12,53 +49,53 @@ def HammingDistance(s,t):
             count+=1
     return count
 
-def Neighbors(t, d):
-    import itertools
-    n=len(t)
+
+def GeneratePatterns( k ):
+    arr = []
     base=['A', 'C', 'G', 'T']
-    for i in sorted(itertools.product(base, repeat=n)):
-        i=''.join(i)
-        if HammingDistance(i,t) <= d:
-            print(i)
-    return ''
+    for i in itertools.product(base, repeat=k):
+        pattern=''.join(i)
+        arr.append( pattern )
+    return arr
 
-def PatternToNumber(s):
-    d={'A':0, 'C':1, 'G':2, 'T':3}
-    n=len(s)
-    c=0
-    for i in range(n):
-        c+=d[s[i:i+1]]*4**(n-i-1)
-    return c
 
-def MotifEnumeration(l, k, d):
-    n=len(l)
-    data={}
-    for x in list(map(lambda x: ''.join(x), sorted(itertools.product(['A', 'C', 'G', 'T'], repeat=k)))):
-        data[x]=0
-        c=0
-        a=[] 
-        for y in range(n):
-            for z in range(len(l[y])-k+1):
-                if HammingDistance(l[y][z:z+k],x) <= d:
-                     a.append(y)
-                     c+=1
-        a=sorted(set(a))
-        if a==list(range(n)):
-            data[x]+=c
+def MOTIFENUMERATION(Dna, k, d):
+    patterns = []
+    arr = GeneratePatterns( k )
+    
+    for p in arr:
+        count = 0
+        for i in Dna:
+            for j in range( len( i ) - k + 1 ):
+                if HammingDistance( i[j:j+k], p  ) <= d:
+                    count += 1
+                    break
+        if count == len( Dna ):
+            patterns.append( p )
+    patterns = sorted( set( patterns ))
+    if len( patterns ) == 0:
+        patterns.append( 'nan' )
+    return patterns
+    
 
-    data=sorted(data.items(), key=lambda x:x[1], reverse=True)
-    m=data[0][1]
-    b=[]
-    for i in data:
-        if i[1]!=0:
-            b.append(i[0])
-    return ' '.join(b)
+
+def test(arr):
+    ###
+    
+    k,d=list(map(int,  arr[0].split() ))
+    Dna =  arr[1:] 
+#    Dna = arr[1].split()
+
+    return MOTIFENUMERATION(Dna, k, d)
+
+    ###
+
 
 if __name__ == '__main__':
-    fl_in=sys.argv[1]
-    fl_out=re.sub('.txt$', '_result.txt', fl_in, 1)
-    with open( fl_in, 'r' ) as flr:
-        k,d=map(int, str(flr.readline().rstrip()).split())
-        l=list(map(lambda x: x.rstrip(), flr.readlines()))
-    with open( fl_out, 'w' ) as flw:
-        flw.write(MotifEnumeration(l, k, d)+'\n')
+
+    arr=OpenArgumentFile().read_single_file()
+    output_file=OpenAchivementFile().name_output_file()
+    with open( output_file, 'w', encoding='utf-8') as fhw:
+        fhw.write(str( PrettyPrintArray(test(arr)) )+'\n')
+#        for a in test(arr):
+#            fhw.write( a +'\n')
