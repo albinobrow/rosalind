@@ -2,7 +2,7 @@
 # coding: utf-8
 
 
-import datetime, re, string, sys, itertools
+import datetime, re, string, sys, itertools, numpy as np, operator
 if sys.version_info[0]<3: input=raw_input
 
 class RowLineInput:
@@ -60,30 +60,29 @@ def GeneratePatterns( k ):
 
     
 def MostProbableKmer(MatrixProfile, k):
-    import itertools, math, numpy as np, operator
     a=np.array(MatrixProfile).T   
     data={}
     arr = GeneratePatterns( k )
     for x in arr:
-        p=math.log10(1)
+        p=0
         for i in range(k):
             if x[i:i+1]=='A':
-                p+=math.log10(a[i][0])
+                p+=a[i][0]
             elif x[i:i+1]=='C':
-                p+=math.log10(a[i][1])
+                p+=a[i][1]
             elif x[i:i+1]=='G':
-                p+=math.log10(a[i][2])
+                p+=a[i][2]
             elif x[i:i+1]=='T':
-                p+=math.log10(a[i][3])
+                p+=a[i][3]
         data[x]=p
     return sorted(data.items(), key=operator.itemgetter(1), reverse=True)
 
 
 def FindMotif(s, sorted_data):
     for i in sorted_data:
-        
         if i[0] in s:
             return i[0]
+
 
 def MakeFloatMatrix( arr ):
     brr=[]
@@ -91,12 +90,13 @@ def MakeFloatMatrix( arr ):
         brr.append(list(map(float, i.split())))
     return brr
 
+
 def test(arr):
     ###
+
     s=arr[0]
     k=int( arr[1] )
     MatrixProfile =  MakeFloatMatrix( arr[2:] )
-
     return  FindMotif(s, MostProbableKmer(MatrixProfile, k))
 
     ###
@@ -108,5 +108,3 @@ if __name__ == '__main__':
     output_file=OpenAchivementFile().name_output_file()
     with open( output_file, 'w', encoding='utf-8') as fhw:
         fhw.write(str(  ( test(arr) )+'\n'))
-#        for a in test(arr):
-#            fhw.write( a +'\n')
