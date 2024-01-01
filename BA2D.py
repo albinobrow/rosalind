@@ -124,12 +124,12 @@ def profileMostProbable(string, k, profile):
     return maxstring[1]
 
 
-def ScoreProfileMatrix( profile ):
-    score=1
+def ScoreProfileMatrix( profile , k):
+    score=0
     arr=np.array( profile )
     for i in arr.T:
-        score*=max(i)
-    return score
+        score+=1-max(i)
+    return score/k
 
 
 def GREEDYMOTIFSEARCH(Dna, k, t):
@@ -140,15 +140,12 @@ def GREEDYMOTIFSEARCH(Dna, k, t):
         motifs=[]
         motif1=Dna[0][i:i+k]
         motifs.append( motif1 )
-        #print(  motifs  )
         for j in range(1,t):   
             profile=MakeMotifProfile(motifs, k)
             motifj=profileMostProbable(Dna[j], k, profile)
             motifs.append(motifj)
-        #print(ScoreProfileMatrix( MakeMotifProfile( motifs, k ))  )
-        if ScoreProfileMatrix( MakeMotifProfile( motifs, k )) >   ScoreProfileMatrix( MakeMotifProfile( bestmotifs, k )):
+        if ScoreProfileMatrix( MakeMotifProfile( motifs, k ), k) < ScoreProfileMatrix( MakeMotifProfile( bestmotifs, k ), k):
             bestmotifs = motifs
-        #print(  motifs  )
     return bestmotifs
 
 
